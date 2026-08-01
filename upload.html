@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<h3>📁 Upload Video / Audio</h3>
+
+<input 
+type="file" 
+id="file"
+accept="video/*,audio/*">
+
+
+<br><br>
+
+<button onclick="uploadFile()">
+✨ Generate Transcript
+</button>
+
+
+<h3>📝 Transcript Result</h3>
+
+<textarea
+id="result"
+style="
+width:100%;
+height:300px;
+font-size:16px;
+">
+</textarea>
+
+
+<br>
+
+<button onclick="copyText()">
+📋 Copy Transcript
+</button>
+
+
+<script>
+
+const API_KEY = "{{API_KEY}}";
+
+
+async function uploadFile(){
+
+let file =
+document.getElementById("file").files[0];
+
+
+if(!file){
+
+alert("Choose file first");
+return;
+
+}
+
+
+document.getElementById("result").value =
+"Uploading to AssemblyAI...";
+
+
+let upload = await fetch(
+"https://api.assemblyai.com/v2/upload",
+{
+method:"POST",
+headers:{
+"authorization":API_KEY
+},
+body:file
+});
+
+
+let uploadData =
+await upload.json();
+
+
+let audio_url =
+uploadData.upload_url;
+
+
+
+let transcript =
+await fetch(
+"https://api.assemblyai.com/v2/transcript",
+{
+method:"POST",
+headers:{
+"authorization":API_KEY,
+"content-type":"application/json"
+},
+body:JSON.stringify({
+audio_url:audio_url
+})
+});
+
+
+let data =
+await transcript.json();
+
+
+let id=data.id;
+
+
+
+while(true){
+
+let check =
+await fetch(
+"https://api.assemblyai.com/v2/transcript/"+id,
+{
+headers:{
+"authorization":API_KEY
+}
+});
+
+
+let result =
+await check.json();
+
+
+if(result.status=="completed"){
+
+document.getElementById("result").value =
+result.text;
+
+break;
+
+}
+
+
+if(result.status=="error"){
+
+document.getElementById("result").value =
+result.error;
+
+break;
+
+}
+
+
+await new Promise(
+r=>setTimeout(r,3000)
+);
+
+
+}
+
+
+}
+
+
+function copyText(){
+
+let text =
+document.getElementById("result");
+
+text.select();
+
+navigator.clipboard.writeText(
+text.value
+);
+
+alert("Copied!");
+
+}
+
+
+</script>
+
+
+</body>
+
+  </html>
