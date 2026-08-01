@@ -1,48 +1,158 @@
 <!DOCTYPE html>
 <html>
 
+<head>
+
+<style>
+
+body{
+background:#0f172a;
+color:white;
+font-family:Arial,sans-serif;
+}
+
+
+.card{
+background:#1e293b;
+padding:25px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+
+h2{
+color:#38bdf8;
+}
+
+
+input[type=file]{
+background:#334155;
+padding:15px;
+border-radius:12px;
+width:100%;
+color:white;
+}
+
+
+button{
+
+background:linear-gradient(
+135deg,
+#2563eb,
+#06b6d4
+);
+
+border:none;
+color:white;
+
+padding:14px 25px;
+
+border-radius:12px;
+
+font-size:16px;
+
+cursor:pointer;
+
+margin-top:15px;
+
+}
+
+
+button:hover{
+
+opacity:.85;
+
+}
+
+
+textarea{
+
+width:100%;
+
+height:350px;
+
+background:#020617;
+
+color:#f8fafc;
+
+border:2px solid #334155;
+
+border-radius:15px;
+
+padding:15px;
+
+font-size:15px;
+
+}
+
+
+</style>
+
+</head>
+
+
 <body>
 
-<h3>📁 Upload Video / Audio</h3>
+
+<div class="card">
+
+
+<h2>
+📁 Upload Video / Audio
+</h2>
+
 
 <input 
-type="file" 
+type="file"
 id="file"
 accept="video/*,audio/*">
 
 
-<br><br>
+<br>
+
 
 <button onclick="uploadFile()">
+
 ✨ Generate Transcript
+
 </button>
 
 
-<h3>📝 Transcript Result</h3>
 
-<textarea
-id="result"
-style="
-width:100%;
-height:300px;
-font-size:16px;
-">
+<h2>
+
+📝 Transcript Result
+
+</h2>
+
+
+<textarea id="result"
+placeholder="Transcript will appear here...">
 </textarea>
 
 
 <br>
 
+
 <button onclick="copyText()">
+
 📋 Copy Transcript
+
 </button>
+
+
+</div>
+
 
 
 <script>
 
-const API_KEY = "{{API_KEY}}";
+
+const API_KEY="{{API_KEY}}";
 
 
 async function uploadFile(){
+
 
 let file =
 document.getElementById("file").files[0];
@@ -51,92 +161,118 @@ document.getElementById("file").files[0];
 if(!file){
 
 alert("Choose file first");
+
 return;
 
 }
 
 
-document.getElementById("result").value =
-"Uploading to AssemblyAI...";
+document.getElementById("result").value=
+"Uploading...";
 
 
-let upload = await fetch(
+let upload =
+await fetch(
+
 "https://api.assemblyai.com/v2/upload",
+
 {
+
 method:"POST",
+
 headers:{
 "authorization":API_KEY
 },
+
 body:file
-});
 
-
-let uploadData =
-await upload.json();
-
-
-let audio_url =
-uploadData.upload_url;
-
-
-
-let transcript =
-await fetch(
-"https://api.assemblyai.com/v2/transcript",
-{
-method:"POST",
-headers:{
-"authorization":API_KEY,
-"content-type":"application/json"
-},
-body:JSON.stringify({
-audio_url:audio_url
-})
 });
 
 
 let data =
-await transcript.json();
+await upload.json();
 
 
-let id=data.id;
+let audio_url=data.upload_url;
+
+
+
+let req =
+await fetch(
+
+"https://api.assemblyai.com/v2/transcript",
+
+{
+
+method:"POST",
+
+headers:{
+
+"authorization":API_KEY,
+
+"content-type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+audio_url:audio_url
+
+})
+
+});
+
+
+let result =
+await req.json();
+
+
+let id=result.id;
 
 
 
 while(true){
 
+
 let check =
 await fetch(
+
 "https://api.assemblyai.com/v2/transcript/"+id,
+
 {
+
 headers:{
+
 "authorization":API_KEY
+
 }
+
 });
 
 
-let result =
+let r =
 await check.json();
 
 
-if(result.status=="completed"){
 
-document.getElementById("result").value =
-result.text;
+if(r.status=="completed"){
+
+document.getElementById("result").value=r.text;
+
+break;
+
+}
+
+
+
+if(r.status=="error"){
+
+document.getElementById("result").value=r.error;
 
 break;
 
 }
 
-
-if(result.status=="error"){
-
-document.getElementById("result").value =
-result.error;
-
-break;
-
-}
 
 
 await new Promise(
@@ -150,16 +286,15 @@ r=>setTimeout(r,3000)
 }
 
 
+
 function copyText(){
 
-let text =
+let box=
 document.getElementById("result");
 
-text.select();
 
-navigator.clipboard.writeText(
-text.value
-);
+navigator.clipboard.writeText(box.value);
+
 
 alert("Copied!");
 
@@ -171,4 +306,4 @@ alert("Copied!");
 
 </body>
 
-  </html>
+</html>
