@@ -1,7 +1,6 @@
 import streamlit as st
 import assemblyai as aai
-import tempfile
-import os
+import requests
 
 st.set_page_config(
     page_title="TranscriptTools",
@@ -10,32 +9,21 @@ st.set_page_config(
 
 st.title("🎬 TranscriptTools")
 
-st.write(
-    "Convert Video / Audio into Text using AssemblyAI"
-)
-
 st.markdown("""
-Supported:
-- MP4
-- MP3
-- WAV
-- M4A
+🔑 Get AssemblyAI API Key:
 
-Languages:
-- English
-- Chinese
-- Burmese
-- 99+ Languages
+https://www.assemblyai.com/app/account
 """)
 
+
 api_key = st.text_input(
-    "🔑 AssemblyAI API Key",
-    type="password",
-    placeholder="Paste your API Key"
+    "AssemblyAI API Key",
+    type="password"
 )
 
+
 uploaded_file = st.file_uploader(
-    "📁 Upload Video / Audio",
+    "Upload Video / Audio",
     type=[
         "mp4",
         "mp3",
@@ -48,86 +36,92 @@ uploaded_file = st.file_uploader(
 if st.button("✨ Generate Transcript"):
 
     if not api_key:
-        st.error(
-            "Please enter AssemblyAI API Key"
-        )
+        st.error("Enter API Key")
 
-    elif uploaded_file is None:
-        st.error(
-            "Please upload a file"
-        )
+    elif not uploaded_file:
+        st.error("Upload File")
 
     else:
+
         try:
 
-            aai.settings.api_key = api_key
-
-            with tempfile.NamedTemporaryFile(
-                delete=False,
-                suffix=os.path.splitext(
-                    uploaded_file.name
-                )[1]
-            ) as f:
-
-                f.write(
-                    uploaded_file.read()
-                )
-
-                file_path = f.name
-
-
-            config = aai.TranscriptionConfig(
-                language_detection=True
-            )
-
-
-            transcriber = aai.Transcriber(
-                config=config
-            )
+            headers = {
+                "authorization": api_key
+            }
 
 
             with st.spinner(
-                "Transcribing..."
+                "Uploading to AssemblyAI..."
             ):
 
-                transcript = transcriber.transcribe(
-                    file_path
+                upload_response = requests.post(
+                    "https://api.assemblyai.com/v2/upload",
+                    headers=headers,
+                    data=uploaded_file.getvalue()
                 )
 
 
-            if transcript.status == aai.TranscriptStatus.error:
+            audio_url = upload_response.json()["upload_url"]
 
-                st.error(
-                    transcript.error
-                )
 
-            else:
+            transcript_request = {
+                "audio_url": audio_url
+            }
+
+
+            transcript_response = requests.post(
+                "https://api.assemblyai.com/v2/transcript",
+                json=transcript_request,
+                headers=headers
+            )
+
+
+            transcript_id = transcript_response.json()["id"]
+
+
+            status = "processing"
+
+
+            while status != "completed":
+
+                result = requests.get(
+                    f"https://api.assemblyai.com/v2/transcript/{transcript_id}",
+                    headers=headers
+                ).json()
+
+
+                status = result["status"]
+
+
+                if status == "error":
+                    st.error(result["error"])
+                    break
+
+
+            if status == "completed":
+
+                text = result["text"]
+
 
                 st.success(
-                    "Completed!"
+                    "Completed ✅"
                 )
 
-                result = transcript.text
 
                 st.text_area(
                     "Transcript Result",
-                    result,
+                    text,
                     height=400
                 )
 
 
                 st.download_button(
-                    "⬇️ Download TXT",
-                    result,
-                    file_name="transcript.txt"
+                    "Download TXT",
+                    text,
+                    "transcript.txt"
                 )
-
-
-            os.remove(file_path)
 
 
         except Exception as e:
 
-            st.error(
-                f"Error: {str(e)}"
-)
+            st.error(str(e))
