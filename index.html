@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TranscriptTools</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+<h1>🎬 TranscriptTools</h1>
+
+<p class="subtitle">
+Video / Audio → AssemblyAI → Original Transcript
+</p>
+
+
+<div class="card">
+
+
+<h2>🔑 AssemblyAI API Key</h2>
+
+<input 
+id="apiKey"
+type="password"
+placeholder="Paste your API Key">
+
+
+<p>
+Need AssemblyAI API Key?
+</p>
+
+<a href="https://www.assemblyai.com/app/account"
+target="_blank">
+
+👉 Get API Key
+
+</a>
+
+
+
+<h2>📁 Upload Video / Audio</h2>
+
+
+<input 
+id="file"
+type="file"
+accept="video/*,audio/*">
+
+
+<button onclick="generateTranscript()">
+
+✨ Generate Transcript
+
+</button>
+
+
+
+<h2>📝 Transcript Result</h2>
+
+
+<textarea 
+id="result"
+placeholder="Transcript will appear here..."
+></textarea>
+
+
+<div>
+
+<button onclick="copyText()">
+
+📋 Copy
+
+</button>
+
+
+<button onclick="downloadText()">
+
+⬇️ Download TXT
+
+</button>
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+  </html>
