@@ -56,6 +56,83 @@ box-shadow:0 10px 40px #000;
 
 
 
+/* Telegram Promotion Box */
+
+.telegram-box{
+
+background:linear-gradient(
+135deg,
+#2563eb,
+#06b6d4
+);
+
+padding:22px;
+
+margin:25px 0;
+
+border-radius:18px;
+
+text-align:center;
+
+font-size:20px;
+
+font-weight:bold;
+
+color:white;
+
+box-shadow:
+0 0 20px rgba(6,182,212,0.6);
+
+animation:pulse 2s infinite;
+
+}
+
+
+.telegram-box span{
+
+display:inline-block;
+
+margin-top:8px;
+
+font-size:26px;
+
+color:#ffffff;
+
+text-shadow:0 0 10px #fff;
+
+}
+
+
+
+@keyframes pulse{
+
+0%{
+
+box-shadow:
+0 0 15px rgba(6,182,212,0.4);
+
+}
+
+
+50%{
+
+box-shadow:
+0 0 30px rgba(6,182,212,0.9);
+
+}
+
+
+100%{
+
+box-shadow:
+0 0 15px rgba(6,182,212,0.4);
+
+}
+
+}
+
+
+
 input{
 
 width:100%;
