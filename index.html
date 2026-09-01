@@ -26,20 +26,45 @@ Video / Audio → AssemblyAI → Original Transcript
 </p>
 
 
+
 <div class="card">
+
 
 
 <h2>🔑 AssemblyAI API Key</h2>
 
+
 <input 
 id="apiKey"
 type="password"
-placeholder="Paste your API Key">
+placeholder="Paste your AssemblyAI API Key">
+
+
+
+<div class="key-buttons">
+
+<button onclick="saveKey()">
+💾 Save
+</button>
+
+
+<button onclick="changeKey()">
+✏️ Change
+</button>
+
+
+<button onclick="removeKey()">
+🗑 Remove
+</button>
+
+</div>
+
 
 
 <p>
 Need AssemblyAI API Key?
 </p>
+
 
 <a href="https://www.assemblyai.com/app/account"
 target="_blank">
@@ -47,6 +72,9 @@ target="_blank">
 👉 Get API Key
 
 </a>
+
+
+
 
 
 <!-- Telegram Promotion Box -->
@@ -67,6 +95,9 @@ target="_blank">
 
 
 
+
+
+
 <h2>📁 Upload Video / Audio</h2>
 
 
@@ -76,11 +107,65 @@ type="file"
 accept="video/*,audio/*">
 
 
+
+
+
 <button onclick="generateTranscript()">
 
 ✨ Generate Transcript
 
 </button>
+
+
+
+
+
+
+<!-- Processing Status -->
+
+<div class="status-box">
+
+
+<h2>⚙️ Processing Status</h2>
+
+
+<p id="statusText">
+
+Waiting...
+
+</p>
+
+
+
+<div class="progress-container">
+
+
+<div 
+id="progressBar"
+class="progress-bar">
+
+</div>
+
+
+</div>
+
+
+
+<p id="progressPercent">
+
+0%
+
+</p>
+
+
+
+</div>
+
+
+
+
+
+
 
 
 
@@ -93,7 +178,10 @@ placeholder="Transcript will appear here..."
 ></textarea>
 
 
+
+
 <div>
+
 
 <button onclick="copyText()">
 
@@ -108,10 +196,13 @@ placeholder="Transcript will appear here..."
 
 </button>
 
+
 </div>
 
 
+
 </div>
+
 
 
 </div>
