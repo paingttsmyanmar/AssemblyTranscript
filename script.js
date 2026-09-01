@@ -1,11 +1,147 @@
 let transcriptText = "";
 
 
+// ===============================
+// API KEY SAVE SYSTEM
+// ===============================
+
+
+window.onload = () => {
+
+    let savedKey = localStorage.getItem(
+        "assembly_api_key"
+    );
+
+    if(savedKey){
+
+        document.getElementById("apiKey").value = savedKey;
+
+    }
+
+};
+
+
+
+function saveKey(){
+
+    let key =
+    document.getElementById("apiKey").value.trim();
+
+
+    if(!key){
+
+        alert("Enter API Key first");
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "assembly_api_key",
+        key
+    );
+
+
+    alert("API Key Saved ✅");
+
+}
+
+
+
+
+function changeKey(){
+
+    let key =
+    document.getElementById("apiKey").value.trim();
+
+
+    if(!key){
+
+        alert("Enter New API Key");
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        "assembly_api_key",
+        key
+    );
+
+
+    alert("API Key Changed ✅");
+
+}
+
+
+
+
+
+function removeKey(){
+
+
+    localStorage.removeItem(
+        "assembly_api_key"
+    );
+
+
+    document.getElementById("apiKey").value="";
+
+
+    alert("API Key Removed 🗑");
+
+}
+
+
+
+
+
+// ===============================
+// PROGRESS SYSTEM
+// ===============================
+
+
+function updateProgress(percent,text){
+
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+    percent+"%";
+
+
+    document.getElementById(
+        "progressPercent"
+    ).innerText =
+    percent+"%";
+
+
+    document.getElementById(
+        "statusText"
+    ).innerText =
+    text;
+
+
+}
+
+
+
+
+
+
+
+// ===============================
+// GENERATE TRANSCRIPT
+// ===============================
+
+
 async function generateTranscript(){
 
 
 const apiKey =
-document.getElementById("apiKey").value;
+document.getElementById("apiKey").value.trim();
 
 
 const file =
@@ -19,16 +155,21 @@ document.getElementById("result");
 
 if(!apiKey){
 
-alert("Please enter AssemblyAI API Key");
+alert(
+"Please enter AssemblyAI API Key"
+);
 
 return;
 
 }
+
 
 
 if(!file){
 
-alert("Please select file");
+alert(
+"Please select file"
+);
 
 return;
 
@@ -36,13 +177,34 @@ return;
 
 
 
-result.value="Uploading...";
+try{
+
+
+updateProgress(
+10,
+"Preparing file..."
+);
 
 
 
-// Upload file to AssemblyAI
+result.value="";
 
-let upload = await fetch(
+
+
+
+
+// Upload File
+
+
+updateProgress(
+30,
+"Uploading File..."
+);
+
+
+
+let upload =
+await fetch(
 
 "https://api.assemblyai.com/v2/upload",
 
@@ -64,9 +226,20 @@ body:file
 
 
 
+
+
+if(!upload.ok){
+
+throw new Error(
+"Upload Failed"
+);
+
+}
+
+
+
 let uploadData =
 await upload.json();
-
 
 
 let audioUrl =
@@ -74,11 +247,17 @@ uploadData.upload_url;
 
 
 
-result.value="Transcribing...";
-
 
 
 // Create Transcript
+
+
+updateProgress(
+55,
+"Sending to AssemblyAI..."
+);
+
+
 
 let response =
 await fetch(
@@ -109,15 +288,30 @@ audio_url:audioUrl
 
 
 
+
+
 let data =
 await response.json();
 
 
-let id=data.id;
+let id =
+data.id;
 
+
+
+
+
+// Check Status
 
 
 while(true){
+
+
+updateProgress(
+75,
+"AI Transcribing..."
+);
+
 
 
 let check =
@@ -138,31 +332,54 @@ headers:{
 );
 
 
+
 let status =
 await check.json();
+
+
 
 
 
 if(status.status==="completed"){
 
 
-transcriptText=status.text;
+transcriptText =
+status.text;
 
 
-result.value=transcriptText;
+result.value =
+transcriptText;
+
+
+
+updateProgress(
+100,
+"Transcript Completed ✅"
+);
+
 
 
 break;
 
 
 }
+
+
 
 
 
 if(status.status==="error"){
 
 
-result.value=status.error;
+result.value =
+status.error;
+
+
+updateProgress(
+0,
+"Error ❌"
+);
+
 
 break;
 
@@ -171,16 +388,53 @@ break;
 
 
 
+
+
 await new Promise(
+
 r=>setTimeout(r,3000)
+
 );
 
 
-}
-
 
 }
 
+
+
+}
+
+catch(error){
+
+
+result.value =
+error.message;
+
+
+updateProgress(
+0,
+"Something went wrong ❌"
+);
+
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ===============================
+// COPY
+// ===============================
 
 
 function copyText(){
@@ -191,37 +445,61 @@ transcriptText
 );
 
 
-alert("Copied!");
+alert(
+"Copied ✅"
+);
+
 
 }
 
+
+
+
+
+
+
+// ===============================
+// DOWNLOAD TXT
+// ===============================
 
 
 function downloadText(){
 
 
+
 let blob =
 new Blob(
+
 [transcriptText],
+
 {
+
 type:"text/plain"
+
 }
+
 );
+
+
 
 
 let link =
 document.createElement("a");
 
 
+
 link.href =
 URL.createObjectURL(blob);
+
 
 
 link.download =
 "transcript.txt";
 
 
+
 link.click();
+
 
 
   }
