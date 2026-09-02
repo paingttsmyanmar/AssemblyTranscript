@@ -12,8 +12,6 @@ margin:0;
 
 
 
-
-
 .container{
 
 max-width:700px;
@@ -23,8 +21,6 @@ margin:auto;
 padding:30px;
 
 }
-
-
 
 
 
@@ -41,12 +37,7 @@ color:#38bdf8;
 text-shadow:
 0 0 20px #38bdf8;
 
-margin-bottom:10px;
-
 }
-
-
-
 
 
 
@@ -54,9 +45,9 @@ margin-bottom:10px;
 
 text-align:center;
 
-color:#cbd5e1;
-
 font-size:18px;
+
+color:#cbd5e1;
 
 margin-bottom:30px;
 
@@ -67,11 +58,10 @@ margin-bottom:30px;
 
 
 
-
 .card{
 
 
-background:rgba(30,41,59,0.95);
+background:#1e293b;
 
 
 padding:30px;
@@ -80,16 +70,14 @@ padding:30px;
 border-radius:25px;
 
 
+border:1px solid #334155;
+
+
 box-shadow:
 0 15px 50px #000;
 
 
-border:1px solid #334155;
-
-
 }
-
-
 
 
 
@@ -102,7 +90,6 @@ color:#7dd3fc;
 font-size:22px;
 
 }
-
 
 
 
@@ -126,13 +113,13 @@ margin:10px 0;
 background:#334155;
 
 
-color:white;
-
-
 border:none;
 
 
 border-radius:12px;
+
+
+color:white;
 
 
 font-size:16px;
@@ -148,18 +135,12 @@ outline:none;
 
 
 
-
-
-
-
 select{
 
 
 cursor:pointer;
 
-
 }
-
 
 
 select option{
@@ -167,10 +148,6 @@ select option{
 
 background:#020617;
 
-
-color:white;
-
-
 }
 
 
@@ -180,28 +157,7 @@ color:white;
 
 
 
-
-/* API BUTTONS */
-
-
-.key-buttons{
-
-
-display:flex;
-
-
-justify-content:center;
-
-
-flex-wrap:wrap;
-
-
-}
-
-
-
-
-
+/* BUTTON */
 
 
 button{
@@ -214,10 +170,10 @@ background:linear-gradient(
 );
 
 
-color:white;
-
-
 border:none;
+
+
+color:white;
 
 
 padding:15px 25px;
@@ -259,11 +215,43 @@ box-shadow:
 
 
 
+.key-buttons{
+
+
+display:flex;
+
+
+flex-wrap:wrap;
+
+
+justify-content:center;
+
+
+}
 
 
 
 
-/* Telegram */
+
+
+
+a{
+
+color:#38bdf8;
+
+font-size:18px;
+
+}
+
+
+
+
+
+
+
+
+
+/* TELEGRAM BOX */
 
 
 .telegram-box{
@@ -295,7 +283,7 @@ font-weight:bold;
 
 
 box-shadow:
-0 0 25px rgba(6,182,212,.7);
+0 0 30px rgba(6,182,212,.7);
 
 
 animation:pulse 2s infinite;
@@ -306,11 +294,10 @@ animation:pulse 2s infinite;
 
 
 
-
 .telegram-box span{
 
 
-font-size:27px;
+font-size:28px;
 
 
 text-shadow:
@@ -318,9 +305,6 @@ text-shadow:
 
 
 }
-
-
-
 
 
 
@@ -362,6 +346,44 @@ box-shadow:
 
 
 
+/* FILE INFO */
+
+
+#fileInfo{
+
+
+background:#020617;
+
+
+border:1px solid #334155;
+
+
+padding:15px;
+
+
+border-radius:12px;
+
+
+color:#7dd3fc;
+
+
+margin-top:10px;
+
+
+font-size:15px;
+
+
+}
+
+
+
+
+
+
+
+
+
+
 /* STATUS */
 
 
@@ -371,10 +393,10 @@ box-shadow:
 margin-top:25px;
 
 
-background:#020617;
-
-
 padding:20px;
+
+
+background:#020617;
 
 
 border-radius:20px;
@@ -384,10 +406,6 @@ border:1px solid #334155;
 
 
 }
-
-
-
-
 
 
 
@@ -409,7 +427,8 @@ font-size:17px;
 
 
 
-/* PROGRESS BAR */
+
+/* PROGRESS */
 
 
 .progress-container{
@@ -428,9 +447,6 @@ border-radius:30px;
 
 
 overflow:hidden;
-
-
-margin-top:15px;
 
 
 }
@@ -458,8 +474,7 @@ background:linear-gradient(
 border-radius:30px;
 
 
-transition:
-width .5s ease;
+transition:.5s;
 
 
 box-shadow:
@@ -477,9 +492,6 @@ overflow:hidden;
 
 
 
-
-
-
 .progress-bar::after{
 
 
@@ -489,22 +501,22 @@ content:"";
 position:absolute;
 
 
-top:0;
-
-
 left:-100%;
 
 
-width:100%;
+top:0;
 
 
 height:100%;
 
 
+width:100%;
+
+
 background:linear-gradient(
 90deg,
 transparent,
-rgba(255,255,255,.9),
+rgba(255,255,255,.8),
 transparent
 );
 
@@ -513,8 +525,6 @@ animation:shine 1.5s infinite;
 
 
 }
-
-
 
 
 
@@ -542,13 +552,53 @@ left:100%;
 text-align:center;
 
 
-color:#38bdf8;
-
-
 font-size:22px;
 
 
 font-weight:bold;
+
+
+color:#38bdf8;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* ERROR BOX */
+
+
+.error-box{
+
+
+display:none;
+
+
+margin-top:20px;
+
+
+padding:15px;
+
+
+border-radius:15px;
+
+
+background:#450a0a;
+
+
+border:1px solid #ef4444;
+
+
+color:#fecaca;
+
+
+font-size:16px;
 
 
 }
@@ -606,28 +656,6 @@ resize:none;
 
 
 
-a{
-
-
-color:#38bdf8;
-
-
-font-size:18px;
-
-
-}
-
-
-
-
-
-
-
-
-
-/* MOBILE */
-
-
 @media(max-width:600px){
 
 
@@ -665,6 +693,9 @@ button{
 
 
 width:100%;
+
+
+margin:6px 0;
 
 
 }
