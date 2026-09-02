@@ -28,6 +28,7 @@ Video / Audio → AssemblyAI → Original Transcript
 
 
 
+
 <div class="card">
 
 
@@ -35,7 +36,7 @@ Video / Audio → AssemblyAI → Original Transcript
 <h2>🔑 AssemblyAI API Key</h2>
 
 
-<input 
+<input
 id="apiKey"
 type="password"
 placeholder="Paste your AssemblyAI API Key">
@@ -84,8 +85,6 @@ target="_blank">
 
 
 
-<!-- Language Select -->
-
 
 <h2>🌐 Transcript Language</h2>
 
@@ -94,87 +93,121 @@ target="_blank">
 
 
 <option value="auto">
-🤖 Auto Detect
+
+🤖 Auto Detect (Recommended)
+
 </option>
+
 
 
 <option value="en">
+
 🇬🇧 English
+
 </option>
 
-
-<option value="my">
-🇲🇲 Myanmar
-</option>
 
 
 <option value="zh">
+
 🇨🇳 Chinese
+
 </option>
 
-
-<option value="th">
-🇹🇭 Thai
-</option>
 
 
 <option value="ja">
+
 🇯🇵 Japanese
+
 </option>
+
 
 
 <option value="ko">
+
 🇰🇷 Korean
+
 </option>
+
 
 
 <option value="vi">
+
 🇻🇳 Vietnamese
+
 </option>
+
 
 
 <option value="id">
+
 🇮🇩 Indonesian
+
 </option>
+
 
 
 <option value="hi">
+
 🇮🇳 Hindi
+
 </option>
+
 
 
 <option value="es">
+
 🇪🇸 Spanish
+
 </option>
+
 
 
 <option value="fr">
+
 🇫🇷 French
+
 </option>
+
 
 
 <option value="de">
+
 🇩🇪 German
+
 </option>
+
 
 
 <option value="it">
+
 🇮🇹 Italian
+
 </option>
+
 
 
 <option value="pt">
+
 🇵🇹 Portuguese
+
 </option>
+
 
 
 <option value="ru">
+
 🇷🇺 Russian
+
 </option>
 
 
+
 <option value="ar">
+
 🇸🇦 Arabic
+
 </option>
 
 
@@ -224,10 +257,11 @@ target="_blank">
 <h2>📁 Upload Video / Audio</h2>
 
 
-<input 
+<input
 id="file"
 type="file"
 accept="video/*,audio/*">
+
 
 
 
@@ -247,7 +281,7 @@ accept="video/*,audio/*">
 
 
 
-<!-- Processing Status -->
+<!-- Processing -->
 
 
 <div class="status-box">
@@ -256,16 +290,21 @@ accept="video/*,audio/*">
 <h2>⚙️ Processing Status</h2>
 
 
+
 <p id="statusText">
+
 Waiting...
+
 </p>
+
+
 
 
 
 <div class="progress-container">
 
 
-<div 
+<div
 id="progressBar"
 class="progress-bar">
 
@@ -277,8 +316,11 @@ class="progress-bar">
 
 
 <p id="progressPercent">
+
 0%
+
 </p>
+
 
 
 </div>
@@ -294,10 +336,12 @@ class="progress-bar">
 <h2>📝 Transcript Result</h2>
 
 
-<textarea 
+<textarea
 id="result"
 placeholder="Transcript will appear here..."
 ></textarea>
+
+
 
 
 
@@ -307,13 +351,17 @@ placeholder="Transcript will appear here..."
 
 
 <button onclick="copyText()">
+
 📋 Copy
+
 </button>
 
 
 
 <button onclick="downloadText()">
+
 ⬇️ Download TXT
+
 </button>
 
 
@@ -323,10 +371,14 @@ placeholder="Transcript will appear here..."
 
 
 
+
+
 </div>
 
 
 </div>
+
+
 
 
 
