@@ -4,6 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>TranscriptTools</title>
@@ -29,7 +30,10 @@ Video / Audio → AssemblyAI → Original Transcript
 
 
 
+
 <div class="card">
+
+
 
 
 
@@ -39,7 +43,9 @@ Video / Audio → AssemblyAI → Original Transcript
 <input
 id="apiKey"
 type="password"
-placeholder="Paste your AssemblyAI API Key">
+placeholder="Paste AssemblyAI API Key">
+
+
 
 
 
@@ -67,17 +73,14 @@ placeholder="Paste your AssemblyAI API Key">
 
 
 
-<p>
-Need AssemblyAI API Key?
-</p>
-
-
-<a href="https://www.assemblyai.com/app/account"
+<a 
+href="https://www.assemblyai.com/app/account"
 target="_blank">
 
 👉 Get API Key
 
 </a>
+
 
 
 
@@ -93,121 +96,77 @@ target="_blank">
 
 
 <option value="auto">
-
 🤖 Auto Detect (Recommended)
-
 </option>
-
 
 
 <option value="en">
-
 🇬🇧 English
-
 </option>
-
 
 
 <option value="zh">
-
 🇨🇳 Chinese
-
 </option>
-
 
 
 <option value="ja">
-
 🇯🇵 Japanese
-
 </option>
-
 
 
 <option value="ko">
-
 🇰🇷 Korean
-
 </option>
-
 
 
 <option value="vi">
-
 🇻🇳 Vietnamese
-
 </option>
-
 
 
 <option value="id">
-
 🇮🇩 Indonesian
-
 </option>
-
 
 
 <option value="hi">
-
 🇮🇳 Hindi
-
 </option>
-
 
 
 <option value="es">
-
 🇪🇸 Spanish
-
 </option>
-
 
 
 <option value="fr">
-
 🇫🇷 French
-
 </option>
-
 
 
 <option value="de">
-
 🇩🇪 German
-
 </option>
-
 
 
 <option value="it">
-
 🇮🇹 Italian
-
 </option>
-
 
 
 <option value="pt">
-
 🇵🇹 Portuguese
-
 </option>
-
 
 
 <option value="ru">
-
 🇷🇺 Russian
-
 </option>
 
 
-
 <option value="ar">
-
 🇸🇦 Arabic
-
 </option>
 
 
@@ -221,28 +180,19 @@ target="_blank">
 
 
 
-<!-- Telegram Box -->
-
-
 <div class="telegram-box">
-
 
 🔥 AI အသံစာလုံး အကန့်မရှိ ထုတ်ယူလိုပါသလား?
 
-
 <br><br>
-
 
 📩 Telegram မှာ ဆက်သွယ်ပါ
 
-
 <br>
-
 
 <span>
 @trollmovie123
 </span>
-
 
 </div>
 
@@ -258,9 +208,24 @@ target="_blank">
 
 
 <input
+
 id="file"
+
 type="file"
-accept="video/*,audio/*">
+
+accept="
+audio/*,
+video/*
+">
+
+
+<!-- File Info -->
+
+<div id="fileInfo">
+
+No file selected
+
+</div>
 
 
 
@@ -281,14 +246,13 @@ accept="video/*,audio/*">
 
 
 
-<!-- Processing -->
+<!-- STATUS -->
 
 
 <div class="status-box">
 
 
 <h2>⚙️ Processing Status</h2>
-
 
 
 <p id="statusText">
@@ -305,13 +269,16 @@ Waiting...
 
 
 <div
+
 id="progressBar"
+
 class="progress-bar">
 
 </div>
 
 
 </div>
+
 
 
 
@@ -322,6 +289,23 @@ class="progress-bar">
 </p>
 
 
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ERROR BOX -->
+
+
+<div class="error-box" id="errorBox">
 
 </div>
 
@@ -336,18 +320,19 @@ class="progress-bar">
 <h2>📝 Transcript Result</h2>
 
 
+
 <textarea
+
 id="result"
+
 placeholder="Transcript will appear here..."
+
 ></textarea>
 
 
 
 
 
-
-
-<div>
 
 
 <button onclick="copyText()">
@@ -365,15 +350,12 @@ placeholder="Transcript will appear here..."
 </button>
 
 
-</div>
-
-
-
 
 
 
 
 </div>
+
 
 
 </div>
@@ -390,4 +372,4 @@ placeholder="Transcript will appear here..."
 </body>
 
 
-  </html>
+</html>
