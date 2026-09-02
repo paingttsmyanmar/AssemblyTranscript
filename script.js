@@ -2,15 +2,14 @@ let transcriptText = "";
 
 
 // ===============================
-// API KEY SAVE SYSTEM
+// LOAD SAVED API KEY
 // ===============================
-
 
 window.onload = () => {
 
-    let savedKey = localStorage.getItem(
-        "assembly_api_key"
-    );
+    let savedKey =
+    localStorage.getItem("assembly_api_key");
+
 
     if(savedKey){
 
@@ -22,6 +21,13 @@ window.onload = () => {
 
 
 
+
+
+// ===============================
+// API KEY SYSTEM
+// ===============================
+
+
 function saveKey(){
 
     let key =
@@ -30,7 +36,7 @@ function saveKey(){
 
     if(!key){
 
-        alert("Enter API Key first");
+        alert("Please enter API Key");
 
         return;
 
@@ -58,7 +64,7 @@ function changeKey(){
 
     if(!key){
 
-        alert("Enter New API Key");
+        alert("Enter new API Key");
 
         return;
 
@@ -92,39 +98,46 @@ function removeKey(){
 
     alert("API Key Removed 🗑");
 
+
 }
+
+
 
 
 
 
 
 // ===============================
-// PROGRESS SYSTEM
+// PROGRESS UPDATE
 // ===============================
 
 
-function updateProgress(percent,text){
+function updateProgress(percent,message){
 
 
-    document.getElementById(
-        "progressBar"
-    ).style.width =
-    percent+"%";
+document.getElementById(
+"progressBar"
+).style.width =
+percent+"%";
 
 
-    document.getElementById(
-        "progressPercent"
-    ).innerText =
-    percent+"%";
+
+document.getElementById(
+"progressPercent"
+).innerText =
+percent+"%";
 
 
-    document.getElementById(
-        "statusText"
-    ).innerText =
-    text;
+
+document.getElementById(
+"statusText"
+).innerText =
+message;
 
 
 }
+
+
 
 
 
@@ -140,12 +153,20 @@ function updateProgress(percent,text){
 async function generateTranscript(){
 
 
+
 const apiKey =
 document.getElementById("apiKey").value.trim();
 
 
+
 const file =
 document.getElementById("file").files[0];
+
+
+
+const language =
+document.getElementById("language").value;
+
 
 
 const result =
@@ -153,41 +174,39 @@ document.getElementById("result");
 
 
 
+
+
 if(!apiKey){
 
-alert(
-"Please enter AssemblyAI API Key"
-);
+alert("Please enter AssemblyAI API Key");
 
 return;
 
 }
+
 
 
 
 if(!file){
 
-alert(
-"Please select file"
-);
+alert("Please select Video / Audio file");
 
 return;
 
 }
+
+
 
 
 
 try{
 
 
+
 updateProgress(
 10,
 "Preparing file..."
 );
-
-
-
-result.value="";
 
 
 
@@ -198,7 +217,7 @@ result.value="";
 
 updateProgress(
 30,
-"Uploading File..."
+"Uploading Video / Audio..."
 );
 
 
@@ -238,8 +257,10 @@ throw new Error(
 
 
 
+
 let uploadData =
 await upload.json();
+
 
 
 let audioUrl =
@@ -249,13 +270,38 @@ uploadData.upload_url;
 
 
 
-// Create Transcript
+
+
+// Create Transcript Request
+
 
 
 updateProgress(
 55,
 "Sending to AssemblyAI..."
 );
+
+
+
+let requestBody = {
+
+audio_url:audioUrl
+
+};
+
+
+
+// Language Lock
+
+if(language !== "auto"){
+
+
+requestBody.language_code =
+language;
+
+
+}
+
 
 
 
@@ -276,11 +322,9 @@ headers:{
 
 },
 
-body:JSON.stringify({
 
-audio_url:audioUrl
+body:JSON.stringify(requestBody)
 
-})
 
 }
 
@@ -294,17 +338,21 @@ let data =
 await response.json();
 
 
-let id =
+
+let transcriptId =
 data.id;
 
 
 
 
 
-// Check Status
+
+
+// CHECK STATUS
 
 
 while(true){
+
 
 
 updateProgress(
@@ -314,10 +362,12 @@ updateProgress(
 
 
 
+
+
 let check =
 await fetch(
 
-"https://api.assemblyai.com/v2/transcript/"+id,
+"https://api.assemblyai.com/v2/transcript/"+transcriptId,
 
 {
 
@@ -333,6 +383,8 @@ headers:{
 
 
 
+
+
 let status =
 await check.json();
 
@@ -340,15 +392,20 @@ await check.json();
 
 
 
-if(status.status==="completed"){
+
+
+if(status.status === "completed"){
+
 
 
 transcriptText =
 status.text;
 
 
+
 result.value =
 transcriptText;
+
 
 
 
@@ -368,17 +425,21 @@ break;
 
 
 
-if(status.status==="error"){
+
+if(status.status === "error"){
+
 
 
 result.value =
 status.error;
 
 
+
 updateProgress(
 0,
 "Error ❌"
 );
+
 
 
 break;
@@ -390,15 +451,19 @@ break;
 
 
 
+
 await new Promise(
 
-r=>setTimeout(r,3000)
+resolve =>
+setTimeout(resolve,3000)
 
 );
 
 
 
 }
+
+
 
 
 
@@ -432,6 +497,7 @@ updateProgress(
 
 
 
+
 // ===============================
 // COPY
 // ===============================
@@ -445,12 +511,12 @@ transcriptText
 );
 
 
-alert(
-"Copied ✅"
-);
+alert("Copied ✅");
 
 
 }
+
+
 
 
 
@@ -482,7 +548,6 @@ type:"text/plain"
 
 
 
-
 let link =
 document.createElement("a");
 
@@ -502,4 +567,4 @@ link.click();
 
 
 
-  }
+    }
