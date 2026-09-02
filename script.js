@@ -1,19 +1,19 @@
 let transcriptText = "";
 
 
-// ===============================
+// ==========================
 // LOAD SAVED API KEY
-// ===============================
+// ==========================
 
-window.onload = () => {
+window.onload = function(){
 
-    let savedKey =
+    const saved =
     localStorage.getItem("assembly_api_key");
 
 
-    if(savedKey){
+    if(saved){
 
-        document.getElementById("apiKey").value = savedKey;
+        document.getElementById("apiKey").value = saved;
 
     }
 
@@ -22,15 +22,14 @@ window.onload = () => {
 
 
 
-
-// ===============================
+// ==========================
 // API KEY SYSTEM
-// ===============================
+// ==========================
 
 
 function saveKey(){
 
-    let key =
+    const key =
     document.getElementById("apiKey").value.trim();
 
 
@@ -58,7 +57,7 @@ function saveKey(){
 
 function changeKey(){
 
-    let key =
+    const key =
     document.getElementById("apiKey").value.trim();
 
 
@@ -87,7 +86,6 @@ function changeKey(){
 
 function removeKey(){
 
-
     localStorage.removeItem(
         "assembly_api_key"
     );
@@ -98,6 +96,40 @@ function removeKey(){
 
     alert("API Key Removed 🗑");
 
+}
+
+
+
+
+
+
+// ==========================
+// PROGRESS SYSTEM
+// ==========================
+
+
+function updateProgress(percent,text){
+
+
+    document.getElementById(
+        "progressBar"
+    ).style.width =
+    percent+"%";
+
+
+
+    document.getElementById(
+        "progressPercent"
+    ).innerText =
+    percent+"%";
+
+
+
+    document.getElementById(
+        "statusText"
+    ).innerText =
+    text;
+
 
 }
 
@@ -107,47 +139,11 @@ function removeKey(){
 
 
 
-// ===============================
-// PROGRESS UPDATE
-// ===============================
 
 
-function updateProgress(percent,message){
-
-
-document.getElementById(
-"progressBar"
-).style.width =
-percent+"%";
-
-
-
-document.getElementById(
-"progressPercent"
-).innerText =
-percent+"%";
-
-
-
-document.getElementById(
-"statusText"
-).innerText =
-message;
-
-
-}
-
-
-
-
-
-
-
-
-
-// ===============================
+// ==========================
 // GENERATE TRANSCRIPT
-// ===============================
+// ==========================
 
 
 async function generateTranscript(){
@@ -189,7 +185,7 @@ return;
 
 if(!file){
 
-alert("Please select Video / Audio file");
+alert("Please select Video / Audio");
 
 return;
 
@@ -203,6 +199,10 @@ try{
 
 
 
+result.value="";
+
+
+
 updateProgress(
 10,
 "Preparing file..."
@@ -212,12 +212,15 @@ updateProgress(
 
 
 
-// Upload File
+
+// ==========================
+// UPLOAD FILE
+// ==========================
 
 
 updateProgress(
 30,
-"Uploading Video / Audio..."
+"Uploading file..."
 );
 
 
@@ -250,10 +253,11 @@ body:file
 if(!upload.ok){
 
 throw new Error(
-"Upload Failed"
+"Upload failed"
 );
 
 }
+
 
 
 
@@ -271,36 +275,45 @@ uploadData.upload_url;
 
 
 
-
-// Create Transcript Request
-
+// ==========================
+// CREATE TRANSCRIPT
+// ==========================
 
 
 updateProgress(
-55,
+50,
 "Sending to AssemblyAI..."
 );
 
 
 
-let requestBody = {
 
-audio_url:audioUrl
+let requestData = {
+
+
+audio_url: audioUrl,
+
+
+speech_model:"universal"
+
 
 };
 
 
 
-// Language Lock
+
+// Language Select
 
 if(language !== "auto"){
 
 
-requestBody.language_code =
+requestData.language_code =
 language;
 
 
 }
+
+
 
 
 
@@ -314,16 +327,21 @@ await fetch(
 
 method:"POST",
 
+
 headers:{
+
 
 "authorization":apiKey,
 
+
 "content-type":"application/json"
+
 
 },
 
 
-body:JSON.stringify(requestBody)
+body:
+JSON.stringify(requestData)
 
 
 }
@@ -334,8 +352,19 @@ body:JSON.stringify(requestBody)
 
 
 
+
 let data =
 await response.json();
+
+
+
+if(!data.id){
+
+throw new Error(
+"Transcript creation failed"
+);
+
+}
 
 
 
@@ -348,7 +377,10 @@ data.id;
 
 
 
+
+// ==========================
 // CHECK STATUS
+// ==========================
 
 
 while(true){
@@ -393,8 +425,7 @@ await check.json();
 
 
 
-
-if(status.status === "completed"){
+if(status.status==="completed"){
 
 
 
@@ -410,8 +441,11 @@ transcriptText;
 
 
 updateProgress(
+
 100,
+
 "Transcript Completed ✅"
+
 );
 
 
@@ -426,23 +460,14 @@ break;
 
 
 
-if(status.status === "error"){
+
+if(status.status==="error"){
 
 
 
-result.value =
-status.error;
-
-
-
-updateProgress(
-0,
-"Error ❌"
+throw new Error(
+status.error
 );
-
-
-
-break;
 
 
 }
@@ -472,13 +497,18 @@ setTimeout(resolve,3000)
 catch(error){
 
 
+
 result.value =
 error.message;
 
 
+
 updateProgress(
+
 0,
-"Something went wrong ❌"
+
+"Error: "+error.message
+
 );
 
 
@@ -496,19 +526,27 @@ updateProgress(
 
 
 
-
-
-// ===============================
-// COPY
-// ===============================
+// ==========================
+// COPY TEXT
+// ==========================
 
 
 function copyText(){
 
 
+
+if(!transcriptText){
+
+return;
+
+}
+
+
+
 navigator.clipboard.writeText(
 transcriptText
 );
+
 
 
 alert("Copied ✅");
@@ -524,12 +562,20 @@ alert("Copied ✅");
 
 
 
-// ===============================
+// ==========================
 // DOWNLOAD TXT
-// ===============================
+// ==========================
 
 
 function downloadText(){
+
+
+
+if(!transcriptText){
+
+return;
+
+}
 
 
 
@@ -567,4 +613,4 @@ link.click();
 
 
 
-    }
+        }
