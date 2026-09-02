@@ -6,7 +6,11 @@ color:white;
 
 font-family:Arial,sans-serif;
 
+margin:0;
+
 }
+
+
 
 
 
@@ -23,6 +27,9 @@ padding:30px;
 
 
 
+
+
+
 h1{
 
 text-align:center;
@@ -32,9 +39,14 @@ font-size:42px;
 color:#38bdf8;
 
 text-shadow:
-0 0 15px #38bdf8;
+0 0 20px #38bdf8;
+
+margin-bottom:10px;
 
 }
+
+
+
 
 
 
@@ -42,31 +54,42 @@ text-shadow:
 
 text-align:center;
 
-font-size:18px;
-
 color:#cbd5e1;
 
-margin-bottom:25px;
+font-size:18px;
+
+margin-bottom:30px;
 
 }
+
+
+
 
 
 
 
 .card{
 
-background:#1e293b;
+
+background:rgba(30,41,59,0.95);
+
 
 padding:30px;
 
-border-radius:22px;
+
+border-radius:25px;
+
 
 box-shadow:
-0 10px 40px #000;
+0 15px 50px #000;
+
 
 border:1px solid #334155;
 
+
 }
+
+
 
 
 
@@ -76,7 +99,12 @@ h2{
 
 color:#7dd3fc;
 
+font-size:22px;
+
 }
+
+
+
 
 
 
@@ -88,43 +116,60 @@ select{
 
 width:100%;
 
+
 padding:15px;
+
 
 margin:10px 0;
 
-border-radius:12px;
-
-border:none;
 
 background:#334155;
 
+
 color:white;
 
+
+border:none;
+
+
+border-radius:12px;
+
+
 font-size:16px;
+
 
 box-sizing:border-box;
 
 
+outline:none;
+
+
 }
+
+
+
+
 
 
 
 select{
 
+
 cursor:pointer;
 
-outline:none;
 
 }
-
 
 
 
 select option{
 
+
 background:#020617;
 
+
 color:white;
+
 
 }
 
@@ -134,19 +179,26 @@ color:white;
 
 
 
-/* API BUTTON */
+
+
+/* API BUTTONS */
+
 
 .key-buttons{
 
 
 display:flex;
 
-flex-wrap:wrap;
 
 justify-content:center;
 
 
+flex-wrap:wrap;
+
+
 }
+
+
 
 
 
@@ -168,7 +220,10 @@ color:white;
 border:none;
 
 
-padding:15px 22px;
+padding:15px 25px;
+
+
+margin:8px;
 
 
 border-radius:12px;
@@ -178,9 +233,6 @@ font-size:16px;
 
 
 cursor:pointer;
-
-
-margin:8px;
 
 
 transition:.3s;
@@ -197,7 +249,7 @@ transform:translateY(-3px);
 
 
 box-shadow:
-0 0 20px #06b6d4;
+0 0 25px #06b6d4;
 
 
 }
@@ -209,7 +261,9 @@ box-shadow:
 
 
 
-/* Telegram Promotion */
+
+
+/* Telegram */
 
 
 .telegram-box{
@@ -222,13 +276,13 @@ background:linear-gradient(
 );
 
 
-padding:22px;
+padding:25px;
 
 
-margin:25px 0;
+margin:30px 0;
 
 
-border-radius:18px;
+border-radius:20px;
 
 
 text-align:center;
@@ -241,7 +295,7 @@ font-weight:bold;
 
 
 box-shadow:
-0 0 25px rgba(6,182,212,.6);
+0 0 25px rgba(6,182,212,.7);
 
 
 animation:pulse 2s infinite;
@@ -251,26 +305,20 @@ animation:pulse 2s infinite;
 
 
 
+
+
 .telegram-box span{
 
 
-display:inline-block;
-
-
-margin-top:8px;
-
-
-font-size:26px;
-
-
-color:white;
+font-size:27px;
 
 
 text-shadow:
-0 0 10px white;
+0 0 15px white;
 
 
 }
+
 
 
 
@@ -288,14 +336,12 @@ box-shadow:
 }
 
 
-
 50%{
 
 box-shadow:
-0 0 35px rgba(6,182,212,.9);
+0 0 40px rgba(6,182,212,1);
 
 }
-
 
 
 100%{
@@ -315,7 +361,8 @@ box-shadow:
 
 
 
-/* STATUS BOX */
+
+/* STATUS */
 
 
 .status-box{
@@ -324,19 +371,23 @@ box-shadow:
 margin-top:25px;
 
 
+background:#020617;
+
+
 padding:20px;
 
 
-border-radius:18px;
-
-
-background:#020617;
+border-radius:20px;
 
 
 border:1px solid #334155;
 
 
 }
+
+
+
+
 
 
 
@@ -355,7 +406,10 @@ font-size:17px;
 
 
 
-/* PROGRESS */
+
+
+
+/* PROGRESS BAR */
 
 
 .progress-container{
@@ -364,19 +418,24 @@ font-size:17px;
 width:100%;
 
 
-height:16px;
+height:18px;
 
 
 background:#334155;
 
 
-border-radius:20px;
+border-radius:30px;
 
 
 overflow:hidden;
 
 
+margin-top:15px;
+
+
 }
+
+
 
 
 
@@ -391,15 +450,16 @@ width:0%;
 
 background:linear-gradient(
 90deg,
-#38bdf8,
+#06b6d4,
 #2563eb
 );
 
 
-border-radius:20px;
+border-radius:30px;
 
 
-transition:.5s;
+transition:
+width .5s ease;
 
 
 box-shadow:
@@ -418,6 +478,8 @@ overflow:hidden;
 
 
 
+
+
 .progress-bar::after{
 
 
@@ -427,10 +489,10 @@ content:"";
 position:absolute;
 
 
-left:-100%;
-
-
 top:0;
+
+
+left:-100%;
 
 
 width:100%;
@@ -442,7 +504,7 @@ height:100%;
 background:linear-gradient(
 90deg,
 transparent,
-rgba(255,255,255,.8),
+rgba(255,255,255,.9),
 transparent
 );
 
@@ -472,19 +534,21 @@ left:100%;
 
 
 
+
+
 #progressPercent{
 
 
 text-align:center;
 
 
-font-size:20px;
+color:#38bdf8;
+
+
+font-size:22px;
 
 
 font-weight:bold;
-
-
-color:#38bdf8;
 
 
 }
@@ -496,7 +560,8 @@ color:#38bdf8;
 
 
 
-/* RESULT BOX */
+
+/* RESULT */
 
 
 textarea{
@@ -540,6 +605,7 @@ resize:none;
 
 
 
+
 a{
 
 
@@ -557,6 +623,8 @@ font-size:18px;
 
 
 
+
+
 /* MOBILE */
 
 
@@ -565,7 +633,9 @@ font-size:18px;
 
 .container{
 
+
 padding:15px;
+
 
 }
 
@@ -573,7 +643,9 @@ padding:15px;
 
 h1{
 
+
 font-size:32px;
+
 
 }
 
@@ -581,7 +653,9 @@ font-size:32px;
 
 .card{
 
+
 padding:20px;
+
 
 }
 
@@ -589,9 +663,9 @@ padding:20px;
 
 button{
 
+
 width:100%;
 
-margin:6px 0;
 
 }
 
@@ -599,10 +673,11 @@ margin:6px 0;
 
 .telegram-box{
 
+
 font-size:17px;
 
-}
-
-
 
 }
+
+
+  }
