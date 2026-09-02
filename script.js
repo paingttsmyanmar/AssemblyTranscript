@@ -2,10 +2,10 @@ let transcriptText = "";
 
 
 // ==========================
-// LOAD SAVED API KEY
+// LOAD API KEY
 // ==========================
 
-window.onload = function(){
+window.onload = () => {
 
     const saved =
     localStorage.getItem("assembly_api_key");
@@ -21,11 +21,9 @@ window.onload = function(){
 
 
 
-
 // ==========================
 // API KEY SYSTEM
 // ==========================
-
 
 function saveKey(){
 
@@ -35,7 +33,7 @@ function saveKey(){
 
     if(!key){
 
-        alert("Please enter API Key");
+        showError("Please enter API Key");
 
         return;
 
@@ -63,7 +61,7 @@ function changeKey(){
 
     if(!key){
 
-        alert("Enter new API Key");
+        showError("Enter new API Key");
 
         return;
 
@@ -79,7 +77,6 @@ function changeKey(){
     alert("API Key Changed ✅");
 
 }
-
 
 
 
@@ -103,30 +100,121 @@ function removeKey(){
 
 
 
+
 // ==========================
-// PROGRESS SYSTEM
+// ERROR BOX
 // ==========================
 
+function showError(message){
+
+    const box =
+    document.getElementById("errorBox");
+
+
+    box.style.display="block";
+
+
+    box.innerText =
+    "❌ Error:\n\n" + message;
+
+}
+
+
+
+function clearError(){
+
+    const box =
+    document.getElementById("errorBox");
+
+
+    box.style.display="none";
+
+
+    box.innerText="";
+
+}
+
+
+
+
+
+
+
+// ==========================
+// FILE INFO
+// ==========================
+
+document
+.getElementById("file")
+.addEventListener(
+"change",
+function(){
+
+
+    const file=this.files[0];
+
+
+    if(!file){
+
+        return;
+
+    }
+
+
+    let size =
+    (file.size / 1024 / 1024)
+    .toFixed(2);
+
+
+
+    document.getElementById("fileInfo")
+    .innerHTML =
+
+    `
+    🎬 File:
+    ${file.name}
+    <br><br>
+
+    📦 Size:
+    ${size} MB
+
+    <br><br>
+
+    📄 Type:
+    ${file.type || "Unknown"}
+    `;
+
+
+});
+
+
+
+
+
+
+
+
+// ==========================
+// PROGRESS
+// ==========================
 
 function updateProgress(percent,text){
 
 
     document.getElementById(
-        "progressBar"
+    "progressBar"
     ).style.width =
     percent+"%";
 
 
-
     document.getElementById(
-        "progressPercent"
+    "progressPercent"
     ).innerText =
     percent+"%";
 
 
-
     document.getElementById(
-        "statusText"
+    "statusText"
     ).innerText =
     text;
 
@@ -140,28 +228,32 @@ function updateProgress(percent,text){
 
 
 
-
 // ==========================
 // GENERATE TRANSCRIPT
 // ==========================
 
-
 async function generateTranscript(){
+
+
+clearError();
 
 
 
 const apiKey =
-document.getElementById("apiKey").value.trim();
+document.getElementById("apiKey")
+.value.trim();
 
 
 
 const file =
-document.getElementById("file").files[0];
+document.getElementById("file")
+.files[0];
 
 
 
 const language =
-document.getElementById("language").value;
+document.getElementById("language")
+.value;
 
 
 
@@ -174,7 +266,9 @@ document.getElementById("result");
 
 if(!apiKey){
 
-alert("Please enter AssemblyAI API Key");
+showError(
+"API Key is missing"
+);
 
 return;
 
@@ -185,7 +279,9 @@ return;
 
 if(!file){
 
-alert("Please select Video / Audio");
+showError(
+"Please select Video / Audio file"
+);
 
 return;
 
@@ -198,30 +294,27 @@ return;
 try{
 
 
-
 result.value="";
 
 
 
 updateProgress(
 10,
-"Preparing file..."
+"Checking file..."
 );
 
 
 
 
 
-
-// ==========================
-// UPLOAD FILE
-// ==========================
+// Upload
 
 
 updateProgress(
 30,
-"Uploading file..."
+"Uploading to AssemblyAI..."
 );
+
 
 
 
@@ -250,10 +343,18 @@ body:file
 
 
 
+
+let uploadData =
+await upload.json();
+
+
+
+
+
 if(!upload.ok){
 
 throw new Error(
-"Upload failed"
+JSON.stringify(uploadData)
 );
 
 }
@@ -262,8 +363,15 @@ throw new Error(
 
 
 
-let uploadData =
-await upload.json();
+if(!uploadData.upload_url){
+
+throw new Error(
+"No upload URL received"
+);
+
+}
+
+
 
 
 
@@ -275,44 +383,37 @@ uploadData.upload_url;
 
 
 
-// ==========================
-// CREATE TRANSCRIPT
-// ==========================
+
+// Create Transcript
 
 
 updateProgress(
 50,
-"Sending to AssemblyAI..."
+"Creating Transcript..."
 );
 
 
 
 
-let requestData = {
+
+let bodyData = {
 
 
-audio_url: audioUrl,
-
-
-speech_model:"universal"
+audio_url: audioUrl
 
 
 };
 
 
 
-
-// Language Select
+// Language
 
 if(language !== "auto"){
 
-
-requestData.language_code =
+bodyData.language_code =
 language;
 
-
 }
-
 
 
 
@@ -327,26 +428,21 @@ await fetch(
 
 method:"POST",
 
-
 headers:{
-
 
 "authorization":apiKey,
 
-
 "content-type":"application/json"
-
 
 },
 
-
 body:
-JSON.stringify(requestData)
-
+JSON.stringify(bodyData)
 
 }
 
 );
+
 
 
 
@@ -358,17 +454,35 @@ await response.json();
 
 
 
-if(!data.id){
+
+
+if(!response.ok){
 
 throw new Error(
-"Transcript creation failed"
+JSON.stringify(data)
 );
 
 }
 
 
 
-let transcriptId =
+
+
+if(!data.id){
+
+throw new Error(
+"Transcript ID not found: "
++
+JSON.stringify(data)
+);
+
+}
+
+
+
+
+
+let id =
 data.id;
 
 
@@ -378,9 +492,7 @@ data.id;
 
 
 
-// ==========================
-// CHECK STATUS
-// ==========================
+// Check Status
 
 
 while(true){
@@ -399,7 +511,7 @@ updateProgress(
 let check =
 await fetch(
 
-"https://api.assemblyai.com/v2/transcript/"+transcriptId,
+"https://api.assemblyai.com/v2/transcript/"+id,
 
 {
 
@@ -425,6 +537,7 @@ await check.json();
 
 
 
+
 if(status.status==="completed"){
 
 
@@ -439,19 +552,14 @@ transcriptText;
 
 
 
-
 updateProgress(
-
 100,
-
 "Transcript Completed ✅"
-
 );
 
 
 
 break;
-
 
 }
 
@@ -459,10 +567,7 @@ break;
 
 
 
-
-
 if(status.status==="error"){
-
 
 
 throw new Error(
@@ -479,15 +584,13 @@ status.error
 
 await new Promise(
 
-resolve =>
-setTimeout(resolve,3000)
+r=>setTimeout(r,3000)
 
 );
 
 
 
 }
-
 
 
 
@@ -497,26 +600,21 @@ setTimeout(resolve,3000)
 catch(error){
 
 
-
-result.value =
-error.message;
+showError(
+error.message
+);
 
 
 
 updateProgress(
-
 0,
-
-"Error: "+error.message
-
+"Failed ❌"
 );
 
 
 
 }
 
-
-
 }
 
 
@@ -527,12 +625,10 @@ updateProgress(
 
 
 // ==========================
-// COPY TEXT
+// COPY
 // ==========================
 
-
 function copyText(){
-
 
 
 if(!transcriptText){
@@ -546,7 +642,6 @@ return;
 navigator.clipboard.writeText(
 transcriptText
 );
-
 
 
 alert("Copied ✅");
@@ -563,9 +658,8 @@ alert("Copied ✅");
 
 
 // ==========================
-// DOWNLOAD TXT
+// DOWNLOAD
 // ==========================
-
 
 function downloadText(){
 
@@ -594,9 +688,9 @@ type:"text/plain"
 
 
 
+
 let link =
 document.createElement("a");
-
 
 
 link.href =
@@ -608,9 +702,7 @@ link.download =
 "transcript.txt";
 
 
-
 link.click();
 
 
-
-        }
+    }
