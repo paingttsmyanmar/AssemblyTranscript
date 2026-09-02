@@ -1,19 +1,19 @@
 let transcriptText = "";
 
 
-// ==========================
-// LOAD API KEY
-// ==========================
+// =========================
+// LOAD SAVED KEY
+// =========================
 
 window.onload = () => {
 
-    const saved =
+    const key =
     localStorage.getItem("assembly_api_key");
 
 
-    if(saved){
+    if(key){
 
-        document.getElementById("apiKey").value = saved;
+        document.getElementById("apiKey").value = key;
 
     }
 
@@ -21,19 +21,20 @@ window.onload = () => {
 
 
 
-// ==========================
-// API KEY SYSTEM
-// ==========================
+// =========================
+// API KEY
+// =========================
+
 
 function saveKey(){
 
-    const key =
+    let key =
     document.getElementById("apiKey").value.trim();
 
 
     if(!key){
 
-        showError("Please enter API Key");
+        showError("API Key မထည့်ရသေးပါ");
 
         return;
 
@@ -53,30 +54,13 @@ function saveKey(){
 
 
 
+
 function changeKey(){
 
-    const key =
-    document.getElementById("apiKey").value.trim();
-
-
-    if(!key){
-
-        showError("Enter new API Key");
-
-        return;
-
-    }
-
-
-    localStorage.setItem(
-        "assembly_api_key",
-        key
-    );
-
-
-    alert("API Key Changed ✅");
+    saveKey();
 
 }
+
 
 
 
@@ -101,13 +85,15 @@ function removeKey(){
 
 
 
-// ==========================
-// ERROR BOX
-// ==========================
+// =========================
+// ERROR DISPLAY
+// =========================
 
-function showError(message){
 
-    const box =
+function showError(error){
+
+
+    let box =
     document.getElementById("errorBox");
 
 
@@ -115,20 +101,23 @@ function showError(message){
 
 
     box.innerText =
-    "❌ Error:\n\n" + message;
+    "❌ ERROR\n\n" + error;
+
 
 }
 
 
 
+
+
+
 function clearError(){
 
-    const box =
+    let box =
     document.getElementById("errorBox");
 
 
     box.style.display="none";
-
 
     box.innerText="";
 
@@ -140,83 +129,30 @@ function clearError(){
 
 
 
-// ==========================
-// FILE INFO
-// ==========================
 
-document
-.getElementById("file")
-.addEventListener(
-"change",
-function(){
-
-
-    const file=this.files[0];
-
-
-    if(!file){
-
-        return;
-
-    }
-
-
-    let size =
-    (file.size / 1024 / 1024)
-    .toFixed(2);
-
-
-
-    document.getElementById("fileInfo")
-    .innerHTML =
-
-    `
-    🎬 File:
-    ${file.name}
-    <br><br>
-
-    📦 Size:
-    ${size} MB
-
-    <br><br>
-
-    📄 Type:
-    ${file.type || "Unknown"}
-    `;
-
-
-});
-
-
-
-
-
-
-
-
-// ==========================
+// =========================
 // PROGRESS
-// ==========================
-
-function updateProgress(percent,text){
+// =========================
 
 
-    document.getElementById(
-    "progressBar"
-    ).style.width =
-    percent+"%";
+function progress(value,text){
 
 
-    document.getElementById(
-    "progressPercent"
-    ).innerText =
-    percent+"%";
+document.getElementById(
+"progressBar"
+).style.width=value+"%";
 
 
-    document.getElementById(
-    "statusText"
-    ).innerText =
-    text;
+
+document.getElementById(
+"progressPercent"
+).innerText=value+"%";
+
+
+
+document.getElementById(
+"statusText"
+).innerText=text;
 
 
 }
@@ -228,37 +164,87 @@ function updateProgress(percent,text){
 
 
 
-// ==========================
-// GENERATE TRANSCRIPT
-// ==========================
+// =========================
+// FILE INFO
+// =========================
+
+
+document
+.getElementById("file")
+.addEventListener(
+"change",
+()=>{
+
+
+let file =
+document.getElementById("file").files[0];
+
+
+
+if(file){
+
+
+document.getElementById(
+"fileInfo"
+).innerHTML = `
+
+🎬 ${file.name}
+
+<br><br>
+
+📦 ${(file.size/1024/1024).toFixed(2)} MB
+
+<br><br>
+
+📄 ${file.type}
+
+`;
+
+
+}
+
+
+});
+
+
+
+
+
+
+
+
+
+// =========================
+// MAIN
+// =========================
+
 
 async function generateTranscript(){
+
 
 
 clearError();
 
 
 
-const apiKey =
-document.getElementById("apiKey")
-.value.trim();
+let apiKey =
+document.getElementById("apiKey").value.trim();
 
 
 
-const file =
-document.getElementById("file")
-.files[0];
+let file =
+document.getElementById("file").files[0];
 
 
 
-const language =
-document.getElementById("language")
-.value;
+let language =
+document.getElementById("language").value;
 
 
 
-const result =
+let result =
 document.getElementById("result");
+
 
 
 
@@ -267,7 +253,7 @@ document.getElementById("result");
 if(!apiKey){
 
 showError(
-"API Key is missing"
+"API Key မရှိပါ"
 );
 
 return;
@@ -280,7 +266,7 @@ return;
 if(!file){
 
 showError(
-"Please select Video / Audio file"
+"File မရွေးထားပါ"
 );
 
 return;
@@ -298,27 +284,29 @@ result.value="";
 
 
 
-updateProgress(
+progress(
 10,
-"Checking file..."
+"Preparing..."
 );
 
 
 
 
 
-// Upload
+
+// =========================
+// UPLOAD
+// =========================
 
 
-updateProgress(
+progress(
 30,
 "Uploading to AssemblyAI..."
 );
 
 
 
-
-let upload =
+let uploadResponse =
 await fetch(
 
 "https://api.assemblyai.com/v2/upload",
@@ -329,11 +317,15 @@ method:"POST",
 
 headers:{
 
+
 "authorization":apiKey
+
 
 },
 
+
 body:file
+
 
 }
 
@@ -344,18 +336,29 @@ body:file
 
 
 
+
 let uploadData =
-await upload.json();
+await uploadResponse.json();
 
 
 
 
 
-if(!upload.ok){
+
+if(!uploadResponse.ok){
+
 
 throw new Error(
-JSON.stringify(uploadData)
+
+"UPLOAD ERROR\n\n"+
+JSON.stringify(
+uploadData,
+null,
+2
+)
+
 );
+
 
 }
 
@@ -365,11 +368,22 @@ JSON.stringify(uploadData)
 
 if(!uploadData.upload_url){
 
+
 throw new Error(
-"No upload URL received"
+
+"No upload URL received\n\n"+
+JSON.stringify(
+uploadData,
+null,
+2
+)
+
 );
 
+
 }
+
+
 
 
 
@@ -384,34 +398,44 @@ uploadData.upload_url;
 
 
 
-// Create Transcript
 
 
-updateProgress(
+
+// =========================
+// CREATE TRANSCRIPT
+// =========================
+
+
+progress(
 50,
-"Creating Transcript..."
+"Sending to AssemblyAI..."
 );
 
 
 
 
 
-let bodyData = {
+
+let body = {
 
 
-audio_url: audioUrl
+audio_url:audioUrl
 
 
 };
 
 
 
-// Language
+
+// language
+
 
 if(language !== "auto"){
 
-bodyData.language_code =
+
+body.language_code =
 language;
+
 
 }
 
@@ -419,7 +443,22 @@ language;
 
 
 
-let response =
+
+
+
+console.log(
+"Request Body",
+body
+);
+
+
+
+
+
+
+
+
+let transcriptResponse =
 await fetch(
 
 "https://api.assemblyai.com/v2/transcript",
@@ -430,14 +469,18 @@ method:"POST",
 
 headers:{
 
+
 "authorization":apiKey,
+
 
 "content-type":"application/json"
 
+
 },
 
-body:
-JSON.stringify(bodyData)
+
+body:JSON.stringify(body)
+
 
 }
 
@@ -448,19 +491,39 @@ JSON.stringify(bodyData)
 
 
 
-
-let data =
-await response.json();
-
+let transcriptData =
+await transcriptResponse.json();
 
 
 
 
-if(!response.ok){
+
+
+console.log(
+"Transcript Response",
+transcriptData
+);
+
+
+
+
+
+
+
+if(!transcriptResponse.ok){
+
 
 throw new Error(
-JSON.stringify(data)
+
+"TRANSCRIPT API ERROR\n\n"+
+JSON.stringify(
+transcriptData,
+null,
+2
+)
+
 );
+
 
 }
 
@@ -468,22 +531,32 @@ JSON.stringify(data)
 
 
 
-if(!data.id){
+
+
+if(!transcriptData.id){
+
 
 throw new Error(
-"Transcript ID not found: "
-+
-JSON.stringify(data)
+
+"No Transcript ID\n\n"+
+JSON.stringify(
+transcriptData,
+null,
+2
+)
+
 );
 
+
 }
+
 
 
 
 
 
 let id =
-data.id;
+transcriptData.id;
 
 
 
@@ -492,16 +565,20 @@ data.id;
 
 
 
-// Check Status
+
+
+// =========================
+// CHECK STATUS
+// =========================
 
 
 while(true){
 
 
 
-updateProgress(
+progress(
 75,
-"AI Transcribing..."
+"Transcribing..."
 );
 
 
@@ -529,21 +606,19 @@ headers:{
 
 
 
-let status =
+let statusData =
 await check.json();
 
 
 
 
 
-
-
-if(status.status==="completed"){
+if(statusData.status==="completed"){
 
 
 
 transcriptText =
-status.text;
+statusData.text;
 
 
 
@@ -552,31 +627,35 @@ transcriptText;
 
 
 
-updateProgress(
+progress(
 100,
-"Transcript Completed ✅"
+"Completed ✅"
 );
-
 
 
 break;
 
+
 }
 
 
 
 
 
-if(status.status==="error"){
+
+
+if(statusData.status==="error"){
 
 
 throw new Error(
-status.error
+
+"PROCESS ERROR\n\n"+
+statusData.error
+
 );
 
 
 }
-
 
 
 
@@ -590,7 +669,9 @@ r=>setTimeout(r,3000)
 
 
 
+
 }
+
 
 
 
@@ -600,13 +681,19 @@ r=>setTimeout(r,3000)
 catch(error){
 
 
+
+result.value =
+error.message;
+
+
+
 showError(
 error.message
 );
 
 
 
-updateProgress(
+progress(
 0,
 "Failed ❌"
 );
@@ -615,6 +702,9 @@ updateProgress(
 
 }
 
+
+
+
 }
 
 
@@ -624,19 +714,12 @@ updateProgress(
 
 
 
-// ==========================
+// =========================
 // COPY
-// ==========================
+// =========================
+
 
 function copyText(){
-
-
-if(!transcriptText){
-
-return;
-
-}
-
 
 
 navigator.clipboard.writeText(
@@ -655,22 +738,12 @@ alert("Copied ✅");
 
 
 
-
-
-// ==========================
+// =========================
 // DOWNLOAD
-// ==========================
+// =========================
+
 
 function downloadText(){
-
-
-
-if(!transcriptText){
-
-return;
-
-}
-
 
 
 let blob =
@@ -679,30 +752,29 @@ new Blob(
 [transcriptText],
 
 {
-
 type:"text/plain"
-
 }
 
 );
 
 
 
-
-let link =
+let a =
 document.createElement("a");
 
 
-link.href =
+
+a.href =
 URL.createObjectURL(blob);
 
 
 
-link.download =
+a.download =
 "transcript.txt";
 
 
-link.click();
+a.click();
 
 
-    }
+
+}
